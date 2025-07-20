@@ -1,0 +1,37 @@
+const express = require('express');
+const fs = require("fs");
+const path = require("path");
+const app = express();
+const port = process.env.PORT || 3000; 
+
+app.use((req: any, res: any, next: any) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("Access-Control-Allow-Private-Network", true);
+  res.setHeader("Access-Control-Max-Age", 7200);
+
+  next();
+});
+
+app.options("*", (req: any, res: any) => {
+  console.log("preflight");
+  return res.status(204).send();
+});
+
+const routes = require('./routes');
+app.use('/api', routes);
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Running on ${port}`);
+});
